@@ -3,20 +3,9 @@ FROM python:stretch
 COPY . /app
 WORKDIR /app
 
-COPY requirements.txt ./ 
-
-COPY . .
-
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python", "main.py"]
+EXPOSE 8080
 
-# CMD ["gunicorn -b :8080 main:APP"]
-
-
-
-
-
-
-
+ENTRYPOINT ["gunicorn", "-b", ":8080", "-w","3", "main:APP"]
