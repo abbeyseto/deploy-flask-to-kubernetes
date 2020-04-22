@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
+
 Description: EKSWSV1
+
 Parameters:
+
   EksClusterName:
     Type: String
     Description: The name of the EKS cluster created
@@ -8,6 +11,7 @@ Parameters:
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter the EKS cluster name
+
   GitSourceRepo:
     Type: String
     Description: GitHub source repository - must contain a Dockerfile and buildspec.yml in the base
@@ -15,6 +19,7 @@ Parameters:
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository name
+    
   GitBranch:
     Type: String
     Default: master
@@ -22,6 +27,7 @@ Parameters:
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository branch name
+  
   GitHubToken:
     Type: String
     NoEcho: true
@@ -29,6 +35,7 @@ Parameters:
     MinLength: 3
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub personal access token
+
   GitHubUser:
     Type: String
     Default: abbeyseto
@@ -36,6 +43,7 @@ Parameters:
     MinLength: 3
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub username or organization
+
   CodeBuildDockerImage:
     Type: String
     Default: aws/codebuild/docker:17.09.0
@@ -43,6 +51,7 @@ Parameters:
     MinLength: 3
     MaxLength: 100
     ConstraintDescription: You must enter a CodeBuild Docker image
+
   KubectlRoleName:
     Type: String
     Default: UdacityFlaskDeployCBKubectlRole
@@ -50,6 +59,8 @@ Parameters:
     MinLength: 3
     MaxLength: 100
     ConstraintDescription: You must enter a kubectl IAM role
+
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -87,13 +98,17 @@ Metadata:
         default: kubectl IAM role
       EksClusterName:
         default: EKS cluster name
+
 Resources:
+
   EcrDockerRepository:
     Type: AWS::ECR::Repository
     DeletionPolicy: Retain
+
   CodePipelineArtifactBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
+
   CustomResourceLambda:
     Type: AWS::Lambda::Function
     Properties:
@@ -135,10 +150,12 @@ Resources:
             headers = {'content-type': '', "content-length": len(response_body) }
             put_response = requests.put(event['ResponseURL'], headers=headers, data=response_body)
             return response
+
       Handler: index.handler
       Role: !GetAtt CustomResourceLambdaExecutionRole.Arn
       Runtime: python2.7
       Timeout: 300
+
   CustomResourceLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -164,6 +181,7 @@ Resources:
                 Action:
                   - iam:GetRole
                   - iam:UpdateAssumeRolePolicy
+
   KubectlAssumeRoleCustomResource:
     Type: Custom::CustomResource
     Properties:
@@ -173,6 +191,7 @@ Resources:
     DependsOn:
       - CustomResourceLambda
       - CodeBuildServiceRole
+
   CodePipelineServiceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -208,6 +227,7 @@ Resources:
                   - s3:GetObjectVersion
                   - s3:GetBucketVersioning
     DependsOn: CodePipelineArtifactBucket
+
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -273,6 +293,7 @@ Resources:
                   - ecr:InitiateLayerUpload
                   - ecr:UploadLayerPart
                   - ecr:CompleteLayerUpload
+
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -298,6 +319,7 @@ Resources:
       Name: !Ref AWS::StackName
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
     DependsOn: KubectlAssumeRoleCustomResource
+    
   CodePipelineGitHub:
     Type: AWS::CodePipeline::Pipeline
     Properties:
