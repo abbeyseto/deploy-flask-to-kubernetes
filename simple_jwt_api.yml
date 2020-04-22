@@ -31,10 +31,10 @@ spec:
     spec:
       containers:
         - name: simple-jwt-api
-          image: CONTAINER_IMAGE
+          image: nginx
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
             allowPrivilegeEscalation: false
-          ports:
-            - containerPort: 8080
+          # ports:
+          #   - containerPort: 8080
