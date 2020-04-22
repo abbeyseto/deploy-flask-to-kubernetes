@@ -3,7 +3,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: EKSWSV1
 
 Parameters:
-
   EksClusterName:
     Type: String
     Description: The name of the EKS cluster created
@@ -19,7 +18,7 @@ Parameters:
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository name
-    
+
   GitBranch:
     Type: String
     Default: master
@@ -27,7 +26,7 @@ Parameters:
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository branch name
-  
+
   GitHubToken:
     Type: String
     NoEcho: true
@@ -59,7 +58,6 @@ Parameters:
     MinLength: 3
     MaxLength: 100
     ConstraintDescription: You must enter a kubectl IAM role
-
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -100,7 +98,6 @@ Metadata:
         default: EKS cluster name
 
 Resources:
-
   EcrDockerRepository:
     Type: AWS::ECR::Repository
     DeletionPolicy: Retain
@@ -319,7 +316,7 @@ Resources:
       Name: !Ref AWS::StackName
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
     DependsOn: KubectlAssumeRoleCustomResource
-    
+
   CodePipelineGitHub:
     Type: AWS::CodePipeline::Pipeline
     Properties:
