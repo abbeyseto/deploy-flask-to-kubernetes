@@ -1,9 +1,5 @@
 ---
 version: 0.2
-env:
-  parameter-store:
-    JWT_SECRET: JWT_SECRET
-    
 phases:
   install:
     commands:
@@ -21,7 +17,6 @@ phases:
   build:
     commands:
       - docker build --tag $REPOSITORY_URI:$TAG .
-
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$TAG
@@ -37,4 +32,6 @@ phases:
       - ls
 artifacts:
   files: build.json
-
+env:
+  parameter-store:
+    JWT_SECRET: JWT_SECRET
