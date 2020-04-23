@@ -6,10 +6,9 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 80
   selector:
-    app: simple-jwt-api
-    
+    app: simple-jwt-api 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,7 +31,7 @@ spec:
     spec:
       containers:
         - name: simple-jwt-api
-          image: CONTAINER_IMAGE
+          image: nginx
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
