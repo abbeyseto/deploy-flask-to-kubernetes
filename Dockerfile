@@ -6,6 +6,7 @@ WORKDIR /app
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "-b", ":8080", "-w","3", "main:APP"]
+ENTRYPOINT ["gunicorn", "-b", ":5000", "-w","3", "main:APP"]
+
